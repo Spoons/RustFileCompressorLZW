@@ -1,0 +1,13 @@
+requires rust and cargo
+requires MSVC2013 or later on windows
+
+to use
+install rust
+cargo run [file-name]
+
+to use sample file:
+cargo run input
+
+compressed file will be saved as compressed.file
+extracted output will be saved as output
+if output file already exists it will be overridden
