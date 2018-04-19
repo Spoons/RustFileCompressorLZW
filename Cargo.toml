@@ -1,7 +1,8 @@
 [package]
-name = "pp3_file_compression"
+name = "lzw_file_compressor"
 version = "0.0.1"
 authors = ["michaelciociola123@gmail.com"]
 
 [dependencies]
 time = ""
+bincode = ""
