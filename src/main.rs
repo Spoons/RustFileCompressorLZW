@@ -8,10 +8,6 @@ use std::fs::OpenOptions;
 use std::env;
 
 extern crate time;
-extern crate bincode;
-
-use bincode::serialize;
-
 use time::PreciseTime;
 
 fn read_file_to_memory(filename: &str, buffer: &mut Vec<u8>, bytes_read: &mut usize) {
@@ -75,35 +71,16 @@ fn write_vector_to_file(filename: &str, input: Vec<u8>) -> usize {
     return 0 as usize;
 }
 
-fn write_u16_vector_to_file(filename: &str, input: &Vec<u16>) -> usize {
-    let path = Path::new(filename);
-    let display = path.display();
-    let mut file = match OpenOptions::new().write(true).create(true).open(filename) {
-        Err(e) => panic!("couldn't create {}: {}", display, e),
-        Ok(file) => file,
-    };
-    let serialized: Vec<u8> = serialize(&input).unwrap();
-    match file.write_all(&serialized) {
-        Err(e) => {
-            panic!("couldn't write to {}: {}", display, e)
-        },
-        Ok(_) => println!("write successful")
-    };
-    return 0 as usize;
-}
 fn main() {
-
 
     let args: Vec<String> = env::args().collect();
 
     //parse args
-
-    let mut decode_only = false;
     let mut filename = "input";
     if args.len() > 1 {
         filename = &args[1];
     }
-
+    let print_decoded = false;
     //here we read the whole file into memory
     let mut file_input_buffer: Vec<u8> = Vec::new();
     //this is how many bytes were read during file read
@@ -160,8 +137,6 @@ fn main() {
         let duration = start.to(end);
 
         //println!("{:?}", output);
-        println!("writing compressed output to disk: \"file.compressed\"");
-        write_u16_vector_to_file("output.compressed", &compressed_data_buffer);
         println!("compression complete\ndictionary size: {}", dictionary.len());
         println!("compressed output bytes: {}", compressed_data_buffer.len()*2);
         let compression_ratio: f32 = 2.0*compressed_data_buffer.len() as f32/bytes_read as f32 * 100.0;
@@ -173,7 +148,6 @@ fn main() {
     //begin decoding. we are going to use the compressed_data_buffer
     //from the encoding step.
     {
-        println!("beginning extraction of file");
         //this is a new dictionary due to the scope change!!
         let mut dictionary: HashMap<u16, Vec<u8>> = HashMap::new();
         //insert the default values into dictionary
@@ -215,7 +189,7 @@ fn main() {
         if (print_decoded) {
             println!("{:?}", str::from_utf8(decoded_output.as_slice()).unwrap());
         }
-        println!("writing ");
+        println!("writing file");
         write_vector_to_file("output", decoded_output);
     }
 }
