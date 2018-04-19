@@ -4,3 +4,4 @@ Cargo.lock
 input
 output
 file
+output.compressed
