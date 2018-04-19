@@ -98,7 +98,6 @@ fn main() {
 
     //parse args
 
-    let mut decode_only = false;
     let mut filename = "input";
     if args.len() > 1 {
         filename = &args[1];
@@ -117,6 +116,7 @@ fn main() {
     //LZW Encoder
     //this is where encoding begins
     {
+
         let start = PreciseTime::now();
         println!("beginning compression");
 
@@ -159,7 +159,6 @@ fn main() {
         let end = PreciseTime::now();
         let duration = start.to(end);
 
-        //println!("{:?}", output);
         println!("writing compressed output to disk: \"file.compressed\"");
         write_u16_vector_to_file("output.compressed", &compressed_data_buffer);
         println!("compression complete\ndictionary size: {}", dictionary.len());
@@ -187,8 +186,6 @@ fn main() {
         let mut code: u16;
         let mut next_code: u16 = dictionary.len() as u16 + 1;
 
-        //println!("dictionary length: {}", dictionary.len());
-
         for x in 0..compressed_data_buffer.len() {
             code = compressed_data_buffer[x].clone();
 
@@ -197,25 +194,20 @@ fn main() {
                 temp.push(previous[0]);
                 dictionary.insert(code, temp);
             }
-            //println!("index: {}, code: {}, next_code: {}",x,code,next_code);
             decoded_output.append(&mut dictionary[&(code)].clone());
 
             if &previous.len() > &(0 as usize) {
                 let mut combined_string: Vec<u8> = previous.clone();
                 combined_string.push(dictionary[&(code)][0]);
                 dictionary.insert(next_code, combined_string);
-                //println!("{}",next_code);
 
                 next_code+=1;
             }
             previous = dictionary[&code].clone();
         }
 
-        //println!("{:?}",decoded_output);
-        if (print_decoded) {
-            println!("{:?}", str::from_utf8(decoded_output.as_slice()).unwrap());
-        }
         println!("writing ");
         write_vector_to_file("output", decoded_output);
+        println!("decompression output written to \"output\"");
     }
 }
