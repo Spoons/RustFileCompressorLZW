@@ -2,3 +2,6 @@
 name = "pp3_file_compression"
 version = "0.0.1"
 authors = ["michaelciociola123@gmail.com"]
+
+[dependencies]
+time = ""
