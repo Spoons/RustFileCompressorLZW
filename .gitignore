@@ -1,3 +1,6 @@
 target/*
 input2
 Cargo.lock
+input
+output
+file
